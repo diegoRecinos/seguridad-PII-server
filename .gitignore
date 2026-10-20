@@ -1,0 +1,21 @@
+# --- Archivos del Sistema Operativo ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Editores de código e IDEs (VS Code, etc.) ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Archivos pesados de Máquinas Virtuales (¡Muy importante!) ---
+*.vdi
+*.vmdk
+*.vhd
+*.ova
+*.iso
+
+# --- Archivos de logs temporales del sistema ---
+*.log
+tmp/
