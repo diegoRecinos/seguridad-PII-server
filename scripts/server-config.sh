@@ -21,6 +21,7 @@ sudo useradd -m -s /bin/bash diego
 sudo useradd -m -s /bin/bash samuel
 sudo useradd -m -s /bin/bash eduardo
 sudo useradd -m -s /bin/bash vmsandbox
+sudo useradd -m -s /bin/bash admin
 
 # Crear un usuario específico para despliegues automatizados o con permisos limitados
 sudo useradd -m -s /bin/bash webmaster
@@ -30,21 +31,20 @@ sudo passwd samuel
 sudo passwd eduardo
 sudo passwd webmaster
 sudo passwd vmsanbox
+sudo passwd admin
 
 
 # Crear grupo para administradores del sitio web
 sudo groupadd webadmin
 
-sudo usermod -aG webadmin diego
-sudo usermod -aG webadmin samuel
-sudo usermod -aG webadmin eduardo
+
 sudo usermod -aG webadmin webmaster
+sudo usermod -aG webadmin admin
 
 #super user do 
 sudo usermod -aG wheel samuel
 sudo usermod -aG wheel eduardo
 sudo usermod -aG wheel diego
-sudo usermod -aG wheel vmsandbox
 
 #agregando llaves ssh publicas al servidor por cada usuario y sus permisos
 mkdir -p ~/.ssh && chmod 700 ~/.ssh && touch ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
@@ -137,6 +137,7 @@ sudo groupadd sysadmin
 # Agregar a samuel y eduardo al nuevo grupo
 sudo usermod -aG sysadmin samuel
 sudo usermod -aG sysadmin eduardo
+sudo usermod -aG sysadmin admin
 
 # Sacar a samuel y eduardo del grupo wheel (para quitarles el acceso total)
 sudo gpasswd -d samuel wheel
@@ -165,3 +166,37 @@ PubkeyAuthentication yes
 # Desactivar por completo el uso de contraseñas
 PasswordAuthentication no
 PermitEmptyPasswords no
+
+#mover las paginas
+WEB_DIR="/usr/share/nginx/html"
+
+# 1. Copiar el contenido de tu carpeta webpage al directorio de Nginx 
+# (Asegúrate de estar en la ruta donde tienes la carpeta 'webpage')
+sudo cp -r webpage/* $WEB_DIR/
+
+# 2. Aplicar los permisos seguros de propietario y grupo (webadmin)
+sudo chown -R root:webadmin $WEB_DIR
+
+# 3. Configurar carpetas con lectura y ejecución (755 o 775 según tu grupo)
+sudo find $WEB_DIR -type d -exec chmod 755 {} +
+
+# 4. Configurar archivos con lectura general (644) para que Nginx pueda mostrarlos
+sudo find $WEB_DIR -type f -exec chmod 644 {} +
+
+# 5. Asegurar acceso de lectura para el servicio de Nginx
+sudo chmod -R g+r $WEB_DIR
+
+APACHE_DIR="/var/www/html"
+
+# 1. Copiar tus archivos a la carpeta de Apache
+sudo cp -r webpage/* $APACHE_DIR/
+
+# 2. Asignar el propietario root y el grupo webadmin
+sudo chown -R root:webadmin $APACHE_DIR
+
+# 3. Configurar permisos seguros
+sudo find $APACHE_DIR -type d -exec chmod 775 {} +
+sudo find $APACHE_DIR -type f -exec chmod 664 {} +
+
+# 4. Asegurar lectura para el grupo
+sudo chmod -R g+r $APACHE_DIR
