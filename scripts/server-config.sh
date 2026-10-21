@@ -20,6 +20,7 @@ sudo systemctl disable ModemManager.service abrt-oops.service abrt-xorg.service 
 sudo useradd -m -s /bin/bash diego
 sudo useradd -m -s /bin/bash samuel
 sudo useradd -m -s /bin/bash eduardo
+sudo useradd -m -s /bin/bash vmsandbox
 
 # Crear un usuario específico para despliegues automatizados o con permisos limitados
 sudo useradd -m -s /bin/bash webmaster
@@ -28,6 +29,7 @@ sudo passwd diego
 sudo passwd samuel
 sudo passwd eduardo
 sudo passwd webmaster
+sudo passwd vmsanbox
 
 
 # Crear grupo para administradores del sitio web
@@ -42,6 +44,11 @@ sudo usermod -aG webadmin webmaster
 sudo usermod -aG wheel samuel
 sudo usermod -aG wheel eduardo
 sudo usermod -aG wheel diego
+sudo usermod -aG wheel vmsandbox
+
+#agregando llaves ssh publicas al servidor por cada usuario y sus permisos
+mkdir -p ~/.ssh && chmod 700 ~/.ssh && touch ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+#nano authorized_keys
 
 
 #start: Inicia el servicio en ese preciso momento
