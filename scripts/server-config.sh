@@ -122,3 +122,25 @@ sudo firewall-cmd --permanent --add-port=8080/tcp
 sudo firewall-cmd --reload
 
 sudo systemctl enable tailscaled
+
+# 3. Activar SetGID en los directorios para que hereden el grupo webadmin automáticamente
+sudo find $WEB_DIR -type d -exec chmod g+s {} +
+
+sudo find $APACHE_DIR -type d -exec chmod g+s {} +
+
+#revocar super user do
+sudo gpasswd -d vmsandbox wheel
+
+# Crear el nuevo grupo sysadmin
+sudo groupadd sysadmin
+
+# Agregar a samuel y eduardo al nuevo grupo
+sudo usermod -aG sysadmin samuel
+sudo usermod -aG sysadmin eduardo
+
+# Sacar a samuel y eduardo del grupo wheel (para quitarles el acceso total)
+sudo gpasswd -d samuel wheel
+sudo gpasswd -d eduardo wheel
+
+# Asegurar que diego siga en wheel
+sudo usermod -aG wheel diego
