@@ -1,0 +1,226 @@
+:root {
+  --fondo: #0f1115;
+  --fondo-alt: #12151b;
+  --tarjeta: #171a21;
+  --chip: #232833;
+  --borde: #2a2f3a;
+  --texto: #e6e9f0;
+  --texto-suave: #c4cad6;
+  --texto-tenue: #9aa3b2;
+  --titulo: #f2f4f8;
+  --acento: #5eead4;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: "Inter", sans-serif;
+}
+
+h1, h2, h3 {
+  font-family: "Space Grotesk", sans-serif;
+  color: var(--titulo);
+  margin: 0;
+}
+
+a:hover { opacity: 0.8; }
+
+.contenedor {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+/* Encabezado */
+.encabezado {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--titulo);
+}
+
+.menu { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.menu a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  color: var(--texto-suave);
+  text-decoration: none;
+  font-size: 15px;
+}
+
+/* Portada */
+.hero { padding-top: 72px; padding-bottom: 64px; }
+
+.hero h1 {
+  max-width: 760px;
+  font-size: 56px;
+  line-height: 1.08;
+  color: #f8f9fb;
+}
+
+.hero p {
+  margin: 24px 0 0;
+  max-width: 620px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #b5bccb;
+}
+
+.hero-lista {
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hero-lista li {
+  font-size: 17px;
+  line-height: 1.55;
+  color: #b5bccb;
+  padding-left: 20px;
+  position: relative;
+}
+
+.hero-lista li::before {
+  content: "›";
+  position: absolute;
+  left: 0;
+  color: var(--acento);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+/* Secciones */
+.seccion { padding-top: 32px; padding-bottom: 64px; }
+
+.seccion h2,
+.curriculum h2 { font-size: 32px; }
+
+.seccion h2 { margin-bottom: 28px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+/* Tarjetas */
+.tarjeta {
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.tarjeta h3 { font-size: 22px; }
+
+.rol { margin: 4px 0 0; font-size: 14px; color: var(--texto-tenue); }
+
+.descripcion { margin: 0; font-size: 15px; line-height: 1.6; color: var(--texto-suave); }
+
+.etiqueta {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+.chips {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chips li {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--chip);
+  color: var(--texto);
+  font-size: 14px;
+}
+
+.ver-cv {
+  margin-top: auto;
+  align-self: flex-start;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--acento);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Currículum */
+.curriculum {
+  background: var(--fondo-alt);
+  border-top: 1px solid var(--borde);
+  padding: 64px 0 80px;
+}
+
+.subtitulo { margin: 8px 0 28px; font-size: 16px; color: var(--texto-tenue); }
+
+.tarjeta-cv { gap: 22px; }
+
+.cv-encabezado { border-bottom: 1px solid var(--borde); padding-bottom: 16px; }
+
+.acento { margin: 4px 0 0; font-size: 14px; color: var(--acento); }
+
+.lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #d3d8e2;
+}
+
+.lista li { margin-bottom: 6px; }
+
+/* Resaltado al llegar desde "Ver currículum" (lo activa script.js) */
+.tarjeta.resaltada {
+  border-color: var(--acento);
+  box-shadow: 0 0 0 1px var(--acento);
+}
+
+/* Pie */
+.pie { padding-top: 28px; padding-bottom: 28px; font-size: 14px; color: var(--texto-tenue); }
+
+/* Móvil */
+@media (max-width: 600px) {
+  .hero { padding-top: 48px; padding-bottom: 40px; }
+  .hero h1 { font-size: 36px; }
+  .seccion h2, .curriculum h2 { font-size: 26px; }
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CV — Samuel | VM Sandbox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .cv-page { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
+    .cv-volver {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--texto-tenue);
+      text-decoration: none;
+      font-size: 14px;
+      margin-bottom: 40px;
+      transition: color 0.2s;
+    }
+    .cv-volver:hover { color: var(--acento); opacity: 1; }
+    .cv-nombre { font-size: 40px; line-height: 1.1; margin-bottom: 6px; }
+    .cv-subtitulo { font-size: 15px; color: var(--acento); margin: 0 0 32px; }
+    .cv-seccion { border-top: 1px solid var(--borde); padding-top: 24px; margin-top: 24px; }
+    .cv-seccion h2 {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--texto-tenue);
+      margin: 0 0 14px;
+    }
+    .cv-seccion ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .cv-seccion li { font-size: 15px; line-height: 1.6; color: var(--texto-suave); }
+    .cv-seccion li strong { color: var(--titulo); }
+    .cv-seccion li .meta { display: block; font-size: 13px; color: var(--texto-tenue); margin-top: 2px; }
+    .pendiente {
+      margin-top: 60px;
+      padding: 32px;
+      border: 1px dashed var(--borde);
+      border-radius: 16px;
+      text-align: center;
+      color: var(--texto-tenue);
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+  <header class="contenedor encabezado">
+    <a href="index.html" class="logo" style="text-decoration:none;">vm sandbox</a>
+    <nav class="menu">
+      <a href="index.html#integrantes">Integrantes</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="cv-page">
+      <a href="index.html" class="cv-volver">← Volver al inicio</a>
+
+      <h1 class="cv-nombre">Samuel</h1>
+      <p class="cv-subtitulo">[Rol / carrera]</p>
+
+      <div class="pendiente">
+        Currículum pendiente de completar.
+      </div>
+    </div>
+  </main>
+
+  <footer class="contenedor pie">
+    <span>2026</span> | VM SANDBOX
+  </footer>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CV — Diego Castro Recinos | VM Sandbox</title>
+  <meta name="description" content="Currículum de Diego Castro Recinos, Técnico en Electrónica y estudiante de Ingeniería Informática, desarrollador full stack.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .cv-page { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
+    .cv-volver {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--texto-tenue);
+      text-decoration: none;
+      font-size: 14px;
+      margin-bottom: 40px;
+      transition: color 0.2s;
+    }
+    .cv-volver:hover { color: var(--acento); opacity: 1; }
+    .cv-nombre { font-size: 40px; line-height: 1.1; margin-bottom: 6px; }
+    .cv-subtitulo { font-size: 15px; color: var(--acento); margin: 0 0 32px; }
+    .cv-seccion { border-top: 1px solid var(--borde); padding-top: 24px; margin-top: 24px; }
+    .cv-seccion h2 {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--texto-tenue);
+      margin: 0 0 14px;
+    }
+    .cv-seccion ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .cv-seccion li { font-size: 15px; line-height: 1.6; color: var(--texto-suave); }
+    .cv-seccion li strong { color: var(--titulo); }
+    .cv-seccion li .meta { display: block; font-size: 13px; color: var(--texto-tenue); margin-top: 2px; }
+    .cv-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .cv-tags span {
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--chip);
+      font-size: 13px;
+      color: var(--texto-suave);
+    }
+    .cv-link { color: var(--acento); text-decoration: none; }
+    .cv-link:hover { opacity: 0.8; }
+  </style>
+</head>
+<body>
+  <header class="contenedor encabezado">
+    <a href="index.html" class="logo" style="text-decoration:none;">vm sandbox</a>
+    <nav class="menu">
+      <a href="index.html#integrantes">Integrantes</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="cv-page">
+      <a href="index.html" class="cv-volver">← Volver al inicio</a>
+
+      <h1 class="cv-nombre">Diego Castro Recinos</h1>
+      <p class="cv-subtitulo">Estudiante de Ingeniería Informática &middot; Full Stack Developer</p>
+
+      <section class="cv-seccion">
+        <h2>Educación</h2>
+        <ul>
+          <li>
+            <strong>Universidad Centroamericana José Simeón Cañas</strong>
+            <span class="meta">Ingeniería Informática · desde 2022</span>
+          </li>
+          <li>
+            <strong>Instituto Técnico Emiliani</strong>
+            <span class="meta">Bachiller Técnico en Electrónica</span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="cv-seccion">
+        <h2>Experiencia</h2>
+        <ul>
+          <li>
+            <strong>Empleado — Soluciones PBS</strong>
+            <span class="meta">septiembre – noviembre 2021</span>
+            Instalación de software para computadoras del gobierno. Carga de inventario.
+          </li>
+        </ul>
+      </section>
+
+      <section class="cv-seccion">
+        <h2>Experiencia Extracurricular</h2>
+        <ul>
+          <li>
+            <strong>Cooperador de evento — DEI UCA</strong>
+            <span class="meta">2024 · Competencia de Programación Final C.A. ICPC 2024</span>
+            Cooperación en la logística y organización del evento.
+          </li>
+        </ul>
+      </section>
+
+      <section class="cv-seccion">
+        <h2>Proyectos</h2>
+        <ul>
+          <li>
+            <strong>Safeplace</strong>
+            <span class="meta">JavaScript · React · Vite</span>
+            Trabajo en equipo de 3 para página web de denuncias con autenticación de usuarios, APIs de mapa, contraseña, RESTful. Despliegue con Nginx y configuración de proxy en AWS. Implementación de Docker con MongoDB y backend.
+          </li>
+          <li>
+            <strong>Configurable AC Wattmeter</strong>
+            <span class="meta">ESP32 · MQTT · Vite · JavaScript · Sensores de voltaje y corriente</span>
+            Circuito y aplicación web para medir y monitorear potencia AC de dispositivos en tiempo real. Servidor MQTT con Docker Broker.
+          </li>
+        </ul>
+      </section>
+
+      <section class="cv-seccion">
+        <h2>Tecnologías</h2>
+        <div class="cv-tags">
+          <span>JavaScript</span>
+          <span>React</span>
+          <span>Vite</span>
+          <span>Nginx</span>
+          <span>Docker</span>
+          <span>MongoDB</span>
+          <span>AWS</span>
+          <span>MQTT</span>
+          <span>ESP32</span>
+        </div>
+      </section>
+
+      <section class="cv-seccion">
+        <h2>Contacto</h2>
+        <ul>
+          <li>
+            <a class="cv-link" href="http://diegorecinos.github.io/website" target="_blank" rel="noopener">diegorecinos.github.io/website</a>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer class="contenedor pie">
+    <span>2026</span> | VM SANDBOX
+  </footer>
+</body>
+</html>
