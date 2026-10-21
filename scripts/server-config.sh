@@ -21,18 +21,27 @@ sudo useradd -m -s /bin/bash diego
 sudo useradd -m -s /bin/bash samuel
 sudo useradd -m -s /bin/bash eduardo
 
+# Crear un usuario específico para despliegues automatizados o con permisos limitados
+sudo useradd -m -s /bin/bash webmaster
+
+sudo passwd diego
+sudo passwd samuel
+sudo passwd eduardo
+sudo passwd webmaster
+
 
 # Crear grupo para administradores del sitio web
 sudo groupadd webadmin
-sudo groupadd deployer
-
-# Crear un usuario específico para despliegues automatizados o con permisos limitados
-sudo useradd -m -s /bin/bash deployer
-sudo usermod -aG deployer deployer
 
 sudo usermod -aG webadmin diego
 sudo usermod -aG webadmin samuel
 sudo usermod -aG webadmin eduardo
+sudo usermod -aG webadmin webmaster
+
+#super user do 
+sudo usermod -aG wheel samuel
+sudo usermod -aG wheel eduardo
+sudo usermod -aG wheel diego
 
 
 #start: Inicia el servicio en ese preciso momento
@@ -104,3 +113,5 @@ sudo firewall-cmd --permanent --add-port=8080/tcp
 
 # 2. Recargar las reglas del firewall
 sudo firewall-cmd --reload
+
+sudo systemctl enable tailscaled
