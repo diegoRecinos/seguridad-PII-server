@@ -144,3 +144,24 @@ sudo gpasswd -d eduardo wheel
 
 # Asegurar que diego siga en wheel
 sudo usermod -aG wheel diego
+
+#Impedir el inicio de sesión directo de root.
+sudo nano /etc/ssh/sshd_config
+
+permitRootLogin no
+
+sudo systemctl reload sshd
+
+#permisos ssh para ciertos users
+/etc/ssh/sshd_config
+
+#ssh a groups
+AllowGroups wheel sysadmin webadmin
+
+
+# Permitir estrictamente el uso de llaves públicas
+PubkeyAuthentication yes
+
+# Desactivar por completo el uso de contraseñas
+PasswordAuthentication no
+PermitEmptyPasswords no
