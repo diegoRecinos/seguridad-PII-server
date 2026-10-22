@@ -200,3 +200,104 @@ sudo find $APACHE_DIR -type f -exec chmod 664 {} +
 
 # 4. Asegurar lectura para el grupo
 sudo chmod -R g+r $APACHE_DIR
+
+#Paso 1: Configurar Nginx para seguridad y ocultar la versión
+#Ocultar la versión de Nginx (server_tokens off;):
+sudo nano /etc/nginx/nginx.conf
+
+#http {
+#    # Ocultar la versión de Nginx en los errores y cabeceras HTTP
+#    server_tokens off;
+#    
+#    # ... (lo demás que ya tengas)
+#}
+
+#server {
+#    listen       80;
+#    server_name  localhost;
+#    root         /usr/share/nginx/html;
+#
+#    # 1. Deshabilitar el listado de directorios (si no hay index.html, da 403 Forbidden en vez de listar)
+#    # Por defecto Nginx ya lo trae deshabilitado si no pones 'autoindex on', 
+#    # pero puedes asegurarlo explícitamente:
+#    autoindex off;
+#
+#    # Archivo de bienvenida por defecto
+#    index index.html index.htm;
+#
+#    location / {
+#        try_files $uri $uri/ =404;
+#    }
+#
+#    # 2. Evitar que respaldos, credenciales, bases de datos y archivos de configuración (.bak, .sql, .env, .conf, .log, etc.) puedan descargarse desde la web
+#    location ~* \.(bak|sql|env|conf|log|sh|ini|git)$ {
+#        deny all;
+#        return 404;
+#    }
+#
+#    # Bloquear acceso a carpetas ocultas (como .git o .env ocultos)
+#    location ~ /\. {
+#        deny all;
+#        return 404;
+#    }
+#}
+
+sudo systemctl restart nginx
+
+
+sudo tee /usr/share/nginx/html/404.html > /dev/null << 'EOF'
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Página no encontrada</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 15%; color: #333; }
+        h1 { font-size: 3em; margin-bottom: 0; }
+        p { color: #777; }
+    </style>
+</head>
+<body>
+    <h1>404</h1>
+    <p>La página que buscas no existe.</p>
+    <a href="/">Volver al inicio</a>
+</body>
+</html>
+EOF
+
+sudo tee /usr/share/nginx/html/50x.html > /dev/null << 'EOF'
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Error del servidor</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 15%; color: #333; }
+        h1 { font-size: 3em; margin-bottom: 0; }
+        p { color: #777; }
+    </style>
+</head>
+<body>
+    <h1>Error</h1>
+    <p>Ocurrió un problema en el servidor. Intenta más tarde.</p>
+</body>
+</html>
+EOF
+
+sudo tee /etc/nginx/default.d/errores.conf > /dev/null << 'EOF'
+error_page 404 /404.html;
+error_page 400 401 403 405 408 413 414 /404.html;
+error_page 500 502 503 504 /50x.html;
+
+location = /404.html { internal; }
+location = /50x.html { internal; }
+EOF
+
+sudo nginx -t && sudo systemctl reload nginx
+
+curl -i http://localhost/loquesea
+
+sudo dnf install -y nginx-mod-http-headers-more-filter
+echo 'more_clear_headers Server;' | sudo tee /etc/nginx/conf.d/headers.conf
+sudo nginx -t && sudo systemctl reload nginx
