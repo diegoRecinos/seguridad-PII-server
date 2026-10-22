@@ -1,0 +1,134 @@
+# ============================================================
+# PUNTO 7 - RESPALDO Y RECUPERACIÓN
+# ============================================================
+
+# ------------------------------------------------------------
+# 7.1 - INVENTARIO: qué respaldar
+# ------------------------------------------------------------
+
+# Busca DocumentRoot en la configuración de Apache (raíz del sitio).
+sudo grep -r "DocumentRoot" /etc/httpd/ 2>/dev/null
+
+# Busca la directiva root en Nginx (equivalente a DocumentRoot).
+sudo grep -rE "^\s*root\s" /etc/nginx/ 2>/dev/null
+
+# Lista recursivamente el sitio de Apache con permisos y dueños.
+sudo ls -laR /var/www/ 2>/dev/null
+
+# Lista el sitio de Nginx; revela symlinks que obligan a respaldar sus destinos.
+sudo ls -laR /usr/share/nginx/html/ 2>/dev/null
+
+# Lista configs adicionales de Apache (identifica las modificadas).
+sudo ls -la /etc/httpd/conf.d/
+
+# Lista configs adicionales de Nginx.
+sudo ls -la /etc/nginx/conf.d/
+
+# Lista configs de SSH; permite separar configs de claves privadas del host.
+sudo ls -la /etc/ssh/
+
+# Lista configs del firewall.
+sudo ls -la /etc/firewalld/zones/ 2>/dev/null
+
+# ------------------------------------------------------------
+# 7.1 (cont.) - Directorio de respaldos protegido
+# ------------------------------------------------------------
+
+# Crea el directorio fuera de todo DocumentRoot (no accesible por web).
+sudo mkdir -p /srv/backups/sitio
+
+# 700: solo root lee, escribe y entra. Evita 777 (prohibido por la guía).
+sudo chmod 700 /srv/backups/sitio
+
+# Dueño y grupo root.
+sudo chown root:root /srv/backups/sitio
+
+# ------------------------------------------------------------
+# 7.1 (cont.) - Generar respaldo
+# ------------------------------------------------------------
+
+# -czp: crear, comprimir gzip, preservar permisos/dueños.
+# --absolute-names: guardar rutas absolutas para restaurar en su lugar.
+# Incluye sitios y configs modificadas. Excluye claves privadas SSH.
+sudo tar -czpf /srv/backups/sitio/respaldo-$(date +%Y%m%d-%H%M).tar.gz \
+  --absolute-names \
+  /var/www/html \
+  /usr/share/nginx/html \
+  /usr/share/testpage \
+  /usr/share/pixmaps/poweredby.png \
+  /etc/httpd/conf.d/seguridad.conf \
+  /etc/httpd/conf.d/sin-listado.conf \
+  /etc/nginx/nginx.conf \
+  /etc/nginx/conf.d/headers.conf \
+  /etc/ssh/sshd_config \
+  /etc/ssh/sshd_config.d \
+  /etc/firewalld/zones/FedoraServer.xml
+
+# ------------------------------------------------------------
+# 7.2 - Crear archivo de prueba
+# ------------------------------------------------------------
+
+# Crea el archivo con una línea y la fecha.
+echo "Archivo suicida de prueba - $(date)" | sudo tee /var/www/html/prueba/archivo-prueba.txt
+
+# Ajusta dueño/grupo al esquema del sitio.
+sudo chown root:webadmin /var/www/html/prueba/archivo-prueba.txt
+
+# Permisos 664 coherentes con el resto del sitio.
+sudo chmod 664 /var/www/html/prueba/archivo-prueba.txt
+
+# ------------------------------------------------------------
+# 7.3 - Respaldo que incluye el archivo de prueba
+# ------------------------------------------------------------
+
+# Nuevo respaldo para incluir archivo-prueba.txt. Se conserva el anterior.
+sudo tar -czpf /srv/backups/sitio/respaldo-completo-$(date +%Y%m%d-%H%M).tar.gz \
+  --absolute-names \
+  /var/www/html \
+  /usr/share/nginx/html \
+  /usr/share/testpage \
+  /usr/share/pixmaps/poweredby.png \
+  /etc/httpd/conf.d/seguridad.conf \
+  /etc/httpd/conf.d/sin-listado.conf \
+  /etc/nginx/nginx.conf \
+  /etc/nginx/conf.d/headers.conf \
+  /etc/ssh/sshd_config \
+  /etc/ssh/sshd_config.d \
+  /etc/firewalld/zones/FedoraServer.xml
+
+# Verifica que el archivo esté en el tar (usar nombre exacto, tar no expande globs).
+sudo tar -tzf /srv/backups/sitio/respaldo-completo-AAAAMMDD-HHMM.tar.gz | grep archivo-prueba
+
+# ------------------------------------------------------------
+# 7.4 - Eliminar el archivo de prueba
+# ------------------------------------------------------------
+
+# Borra solo el archivo de prueba; no toca sitio, configs ni respaldos.
+sudo rm /var/www/html/prueba/archivo-prueba.txt
+
+# Verifica que el directorio quedó vacío.
+ls -la /var/www/html/prueba/
+
+# ------------------------------------------------------------
+# 7.5 - Restaurar desde el respaldo
+# ------------------------------------------------------------
+
+# -xzpf: extraer, descomprimir, preservar permisos/dueños.
+# --absolute-names: interpreta la ruta como absoluta, tal como se guardó.
+# Extrae solo ese archivo.
+sudo tar -xzpf /srv/backups/sitio/respaldo-completo-AAAAMMDD-HHMM.tar.gz \
+  --absolute-names \
+  /var/www/html/prueba/archivo-prueba.txt
+
+# ------------------------------------------------------------
+# 7.6 - Verificar la restauración
+# ------------------------------------------------------------
+
+# Confirma dueño, grupo, permisos, tamaño y fecha originales.
+ls -l /var/www/html/prueba/archivo-prueba.txt
+
+# Confirma que el contenido es idéntico al original.
+cat /var/www/html/prueba/archivo-prueba.txt
+
+
+
