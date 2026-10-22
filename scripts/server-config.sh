@@ -48,7 +48,7 @@ sudo usermod -aG wheel diego
 
 #agregando llaves ssh publicas al servidor por cada usuario y sus permisos
 mkdir -p ~/.ssh && chmod 700 ~/.ssh && touch ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
-#nano authorized_keys
+nano authorized_keys
 
 
 #start: Inicia el servicio en ese preciso momento
@@ -323,3 +323,115 @@ sudo apachectl configtest && sudo systemctl reload httpd
 
 sudo mkdir -p /var/www/html/prueba
 curl -I http://localhost:8080/prueba/
+
+#Generar y localizar los siguientes eventos:
+
+Detach es en otra terminal 
+sudo tail -f /var/log/secure
+
+sudo tail -f /var/log/nginx/access.log
+
+sudo tail -f /var/log/httpd/access_log
+
+Ubicaciones exactas en el servidor:
+Registros de Autenticación SSH (Éxitos y Fallos): /var/log/secure
+Registros de peticiones HTTP/HTTPS de Nginx: /var/log/nginx/access.log
+Registros de peticiones de Apache: /var/log/httpd/access_log
+sudo grep "Accepted" /var/log/secure
+sudo grep "Failed password" /var/log/secure
+sudo grep " 200 " /var/log/nginx/access.log
+sudo grep " 200 " /var/log/nginx/access.log
+
+sudo grep -E "Accepted|Failed password" /var/log/secure
+sudo tail -n 50 /var/log/nginx/access.log
+
+
+Preparación (acceso al servidor)
+powershell
+# [PS] Verificar que Tailscale ve el servidor
+tailscale status
+tailscale login
+Test-NetConnection 100.97.198.98 -Port 22
+# [PS] Generar llave y ver la pública
+ssh-keygen -t ed25519
+type $env:USERPROFILE\.ssh\id_ed25519.pub
+# [PS] Entrar al servidor
+ssh samuel@100.97.198.98
+bash
+# [SERVIDOR] Confirmar sudo
+sudo whoami
+# [SERVIDOR] Instalar y activar la grabación de la sesión
+sudo dnf install -y util-linux-script
+script -a ~/parcial-samuel.log
+Parte 5: Firewall
+bash
+# [SERVIDOR] Ver puertos de Apache y Nginx
+sudo ss -tlnp | grep -E "httpd|nginx"
+# [SERVIDOR] Estado actual del firewall (activo y permanente)
+sudo firewall-cmd --list-all
+sudo firewall-cmd --permanent --list-all
+# [SERVIDOR] Confirmar el puerto de Apache como permanente
+sudo firewall-cmd --permanent --add-port=8080/tcp
+# [SERVIDOR] Quitar servicios innecesarios
+sudo firewall-cmd --permanent --remove-service=dhcpv6-client
+sudo firewall-cmd --permanent --remove-service=cockpit
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
+# [SERVIDOR] Restringir SSH por IP (Windows, VM, recinos-pc, msi)
+sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source
+address="100.64.100.84" service name="ssh" accept'
+sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source
+address="100.125.218.63" service name="ssh" accept'
+sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source
+address="100.105.135.14" service name="ssh" accept'
+sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source
+address="100.91.121.81" service name="ssh" accept'
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
+# [SERVIDOR] Quitar el SSH abierto a todos
+sudo firewall-cmd --permanent --remove-service=ssh
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
+powershell
+# [PS] Acceso permitido (conexión nueva con SSH general cerrado)
+ssh samuel@100.97.198.98
+Demostración del acceso bloqueado:
+bash
+# [SERVIDOR] Quitar temporalmente la regla de mi Windows
+sudo firewall-cmd --permanent --remove-rich-rule='rule family="ipv4" source
+address="100.64.100.84" service name="ssh" accept'
+sudo firewall-cmd --reload
+powershell
+# [PS] Resultado: Connection timed out (bloqueado)
+ssh samuel@100.97.198.98
+bash
+# [SERVIDOR] Restaurar la regla
+sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source
+address="100.64.100.84" service name="ssh" accept'
+sudo firewall-cmd --reload
+IP agregada para Eddi (msi-1):
+bash
+# [SERVIDOR]
+sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source
+address="100.106.239.34" service name="ssh" accept'
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
+Parte 6: Registros (llevo 3 de 5)
+6.1 SSH exitoso
+bash
+# [SERVIDOR]
+sudo journalctl -u sshd | grep Accepted | tail -5
+6.2 SSH fallido
+powershell
+# [PS] Genera el intento con un usuario inexistente
+ssh usuarioinventado@100.97.198.98
+bash
+# [SERVIDOR]
+sudo journalctl -u sshd | grep -E "Invalid user|Failed|Connection closed" | tail -5
+6.3 Apache exitoso (puerto 8080)
+powershell
+# [PS]
+curl.exe http://100.97.198.98:8080/
+bash
+# [SERVIDOR]
+sudo tail -3 /var/log/httpd/access_log
