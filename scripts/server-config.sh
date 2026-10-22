@@ -301,3 +301,25 @@ curl -i http://localhost/loquesea
 sudo dnf install -y nginx-mod-http-headers-more-filter
 echo 'more_clear_headers Server;' | sudo tee /etc/nginx/conf.d/headers.conf
 sudo nginx -t && sudo systemctl reload nginx
+
+#para apache
+sudo tee /etc/httpd/conf.d/seguridad.conf > /dev/null << 'EOF'
+ServerTokens Prod
+ServerSignature Off
+TraceEnable Off
+EOF
+
+sudo apachectl configtest && sudo systemctl reload httpd
+curl -I http://localhost:8080/loquesea
+
+#En Apache el listado de directorios lo controla la opción Indexes. Para desactivarlo, pega esto:
+sudo tee /etc/httpd/conf.d/sin-listado.conf > /dev/null << 'EOF'
+<Directory "/var/www/html">
+    Options -Indexes
+</Directory>
+EOF
+
+sudo apachectl configtest && sudo systemctl reload httpd
+
+sudo mkdir -p /var/www/html/prueba
+curl -I http://localhost:8080/prueba/
